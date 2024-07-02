@@ -16,6 +16,7 @@
 package com.linecorp.flagship4j.examples;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,9 +40,12 @@ public class JavaFlagrAbTestExample {
 
     private static final String FLAG_KEY = "blue-green-exp";
 
-    private static List<String> userIds = List.of(
-            "bd4535a4-5ee6-40bb-ae06-e5f565b2c0ea",
-            "ae0bd08e-cc87-4ef3-a85b-8acdd4133f07");
+    private static List<String> userIds = new ArrayList<String>() {
+        {
+            add("bd4535a4-5ee6-40bb-ae06-e5f565b2c0ea");
+            add("ae0bd08e-cc87-4ef3-a85b-8acdd4133f07");
+        }
+    };
 
     public static void main(String[] args) throws InterruptedException, IOException {
         String userId = userIds.get(0);
