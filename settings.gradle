@@ -1,0 +1,16 @@
+rootProject.name = 'flagship4j'
+
+include 'libs:flagship4j-javaflagr-core'
+include 'libs:flagship4j-openfeature-provider-javaflagr'
+include 'supports:flagship4j-openfeature-javaflagr-starter'
+include 'supports:flagship4j-openfeature-spring-boot-starter'
+include 'supports:flagship4j-javaflagr-spring-boot-web-starter'
+include 'examples:javaflagr-example'
+include 'examples:javaflagr-abtest-example'
+include 'examples:openfeature-example'
+include 'examples:openfeature-canary-release-example'
+include 'examples:openfeature-abtest-example'
+include 'examples:openfeature-white-list-example'
+include 'examples:javaflagr-spring-boot-web-example'
+include 'examples:openfeature-spring-boot-example'
+

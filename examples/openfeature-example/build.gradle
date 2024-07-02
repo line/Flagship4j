@@ -1,0 +1,25 @@
+plugins {
+    id "application"
+}
+
+description = "An simple example of OpenFeature with OpenFlagr provider"
+
+dependencies {
+    
+    implementation project(':supports:flagship4j-openfeature-javaflagr-starter')
+
+    implementation 'com.googlecode.lanterna:lanterna:3.1.1'
+
+}
+
+ext {
+    javaMainClass = "com.linecorp.flagship4j.examples.OpenFeatureExample"
+}
+
+application {
+    mainClassName = javaMainClass
+}
+
+run {
+    standardInput = System.in
+}

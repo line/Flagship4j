@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.14'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.linecorp.flagship4j.examples'
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter"
+    implementation project(':supports:flagship4j-openfeature-spring-boot-starter')
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}

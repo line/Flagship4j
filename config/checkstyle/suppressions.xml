@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2018 LINE Corporation. All rights reserved.
+  ~ LINE Corporation PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+  -->
+
+<!DOCTYPE suppressions PUBLIC
+  "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+  "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+  <suppress checks="." files="[\\/]org.springframework[\\/].*\.java$"/>
+  <suppress checks="." files="[\\/]com.google.protobuf[\\/].*\.java$"/>
+</suppressions>

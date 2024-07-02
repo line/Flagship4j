@@ -1,0 +1,9 @@
+allprojects {
+    task publish {
+        println "skip $project.name publish"
+    }
+
+    task release {
+        println "skip $project.name release"
+    }
+}

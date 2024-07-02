@@ -1,0 +1,102 @@
+plugins {
+    id 'jacoco'
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.ltgt.errorprone' version "${errorprone}"
+    id 'org.springframework.boot' version "${springbootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyVersion}"
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.projectlombok:lombok'
+
+    implementation 'com.google.errorprone:error_prone_annotations:2.9.0'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.jeasy:easy-random-core:4.3.0'
+    implementation 'org.apache.commons:commons-lang3'
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-inline'
+    testImplementation 'com.squareup.okhttp3:mockwebserver'
+
+
+    // ErrorProne
+    errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
+    errorprone 'com.google.errorprone:error_prone_core:2.9.0'
+
+}
+
+jar {
+    enabled = true
+    archiveClassifier = ''
+}
+
+bootJar.enabled = false
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.html")
+        xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    }
+    dependsOn test
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/entity/**',
+                    '**/model/**',
+                    '**/exception/**'
+            ])
+        }))
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    // TODO: Fix serial in warn level
+    options.compilerArgs << "-Xlint:all" << "-Xlint:-serial" << "-Xlint:-processing"
+    options.errorprone {
+        disableWarningsInGeneratedCode = true
+        excludedPaths = ".*/build/.*"
+    }
+    options.errorprone.errorproneArgs.addAll(
+            "-Xlint:unchecked",
+            // TODO: Need to fix in error level
+            "-Xep:SameNameButDifferent:OFF",
+            // TODO: Need to fix in warn level
+            "-Xep:AssertEqualsArgumentOrderChecker:OFF",
+            "-Xep:MissingSummary:OFF",
+            "-Xep:EmptyBlockTag:OFF",
+            "-Xep:MissingOverride:OFF",
+            "-Xep:InconsistentCapitalization:OFF",
+            "-Xep:HidingField:OFF",
+            "-Xep:DoubleBraceInitialization:OFF",
+            "-Xep:DefaultCharset:OFF",
+            "-Xep:InlineFormatString:OFF",
+            "-Xep:StringSplitter:OFF",
+            "-Xep:UnusedVariable:OFF",
+    )
+}
+
+apply from: "$rootDir/gradle/publish.gradle"

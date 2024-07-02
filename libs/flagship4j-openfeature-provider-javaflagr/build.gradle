@@ -1,0 +1,52 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+ext {
+    company = "linecorp"
+    moduleName = group + ".openfeature.provider.javaflagr"
+}
+
+jar {
+    enabled = true
+    archiveClassifier = ''
+    manifest {
+        attributes 'Automatic-Module-Name' : moduleName
+        attributes 'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
+        attributes 'Build-Version': project.version
+        attributes 'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})"
+        attributes 'Build-OS': "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+        attributes 'Built-By': company
+        attributes 'Created-By': "Gradle ${gradle.gradleVersion}"
+    }
+}
+
+dependencies {
+    implementation project(':libs:flagship4j-javaflagr-core')
+
+    // openfeature
+    implementation('dev.openfeature:sdk:1.7.1') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+
+    // log4j2
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.20.0'
+
+    // apache commons lang 3
+    implementation 'org.apache.commons:commons-lang3:3.13.0'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+apply from: "$rootDir/gradle/publish.gradle"

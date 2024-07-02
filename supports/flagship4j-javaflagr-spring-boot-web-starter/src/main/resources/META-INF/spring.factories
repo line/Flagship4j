@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.linecorp.flagship4j.javaflagr.config.FlagrEvalClientConfiguration,\
+  com.linecorp.flagship4j.javaflagr.config.FlagrExceptionHandler

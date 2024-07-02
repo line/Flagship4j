@@ -1,0 +1,25 @@
+plugins {
+    id "application"
+}
+
+description = "A Canary Release example of OpenFeature with OpenFlagr provider"
+
+dependencies {
+    
+    implementation project(':supports:flagship4j-openfeature-javaflagr-starter')
+    implementation 'org.projectlombok:lombok:1.18.20'
+
+}
+
+
+ext {
+    javaMainClass = "com.linecorp.flagship4j.examples.OpenFeatureCanaryExample"
+}
+
+application {
+    mainClassName = javaMainClass
+}
+
+run {
+    standardInput = System.in
+}

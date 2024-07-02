@@ -1,0 +1,21 @@
+plugins {
+    id "application"
+}
+
+description = "A white list example of OpenFeature with OpenFlagr provider"
+
+dependencies {
+    implementation project(':supports:flagship4j-openfeature-javaflagr-starter')
+}
+
+ext {
+    javaMainClass = "com.linecorp.flagship4j.examples.OpenFeatureWhiteListExample"
+}
+
+application {
+    mainClassName = javaMainClass
+}
+
+run {
+    standardInput = System.in
+}

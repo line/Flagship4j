@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.springframework.boot' version "${springbootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyVersion}"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    api('org.springframework.boot:spring-boot-starter')
+    api(project(':supports:flagship4j-openfeature-javaflagr-starter')) {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+    }
+    api('dev.openfeature:sdk:1.7.1') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+}
+
+jar {
+    enabled = true
+    archiveClassifier = ''
+}
+
+bootJar.enabled = false
+
+
+compileJava.dependsOn(processResources)
+
+apply from: "$rootDir/gradle/publish.gradle"

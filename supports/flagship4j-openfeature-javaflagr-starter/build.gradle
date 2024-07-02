@@ -1,0 +1,32 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+dependencies {
+    api(project(':libs:flagship4j-javaflagr-core'))
+
+    // openfeature
+    api('dev.openfeature:sdk:1.7.1') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+
+    api(project(':libs:flagship4j-openfeature-provider-javaflagr'))
+}
+
+jar {
+    enabled = true
+    archiveClassifier = ''
+}
+
+apply from: "$rootDir/gradle/publish.gradle"

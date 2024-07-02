@@ -1,0 +1,9 @@
+description = "An simple example of JavaFlagr"
+
+dependencies {
+    
+    implementation project(':libs:flagship4j-javaflagr-core')
+
+    implementation 'com.googlecode.lanterna:lanterna:3.1.1'
+
+}
