@@ -1,1 +1,1 @@
-OpenFeatureAutoConfiguration
+com.linecorp.flagship4j.openfeature.springframework.boot.autoconfigure.OpenFeatureAutoConfiguration
