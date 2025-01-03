@@ -176,7 +176,7 @@ public class DefaultOpenFlagr implements OpenFlagr {
     private Optional<EvaluationResult> getEvaluationResult(EvaluationContext evaluationContext) {
         try {
             EvaluationResult evaluationResult = openFlagrApiClient.postEvaluation(evaluationContext);
-            validateReturnData(evaluationResult);
+            validateReturnData(evaluationContext, evaluationResult);
             return Optional.ofNullable(evaluationResult);
         } catch (OpenFlagrException e) {
             log.error(e.getMessage());
@@ -193,12 +193,16 @@ public class DefaultOpenFlagr implements OpenFlagr {
         }
     }
 
-    private void validateReturnData(EvaluationResult evaluationResult) {
+    private void validateReturnData(EvaluationContext evaluationContext, EvaluationResult evaluationResult) {
         if (evaluationResult.getFlagId() == null) {
-            throw new OpenFlagrNoFlagKeyException("Flag key not found. Please check UI panel.");
+            throw new OpenFlagrNoFlagKeyException(
+                    String.format("The flag with key %s was not found. Please verify the flag key in the UI panel.",
+                                  evaluationContext.getFlagKey()));
         }
         if (evaluationResult.getVariantKey() == null) {
-            throw new OpenFlagrNoVariantException("No variant key found. Check rollout and distribution on UI panel.");
+            throw new OpenFlagrNoVariantException(
+                    String.format("No variant key was found for flag key %s. Please check the rollout and distribution settings in the UI panel.",
+                                  evaluationContext.getFlagKey()));
         }
     }
 
