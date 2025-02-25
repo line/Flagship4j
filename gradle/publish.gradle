@@ -1,37 +1,8 @@
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = 'sources'
-}
-
-task printlVersion {
-    println("\nprojectName : $project.name")
-    println("version : $version ")
-}
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact sourcesJar
-            from components.java
-        }
-    }
-
+nexusPublishing {
     repositories {
-        println("testing version : $version ")
-//        mavenLocal()
-        if (version.toString().endsWith('-SNAPSHOT')) {
-            maven {
-                url System.getenv("MAVEN_SNAPSHOT_URL")
-            }
-        } else {
-            println("local version : $version ")
-            maven {
-                credentials {
-                    username System.getenv("GITHUB_REPOSITORY")
-                    password System.getenv("GITHUB_TOKEN")
-                }
-                url System.getenv("MAVEN_URL")
-            }
+        sonatype {
+            username.set(System.getenv("MAVEN_USERNAME"))
+            password.set(System.getenv("MAVEN_PASSWORD"))
         }
     }
 }
-
