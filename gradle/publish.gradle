@@ -1,8 +1,75 @@
-nexusPublishing {
-    repositories {
-        sonatype {
-            username.set(System.getenv("MAVEN_USERNAME"))
-            password.set(System.getenv("MAVEN_PASSWORD"))
+/*
+ * Copyright (c) 2025 LY Corporation. All rights reserved.
+ * LY Corporation PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+
+plugins {
+    id 'signing'
+    id 'maven-publish'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = project.name
+                packaging = 'jar'
+                description = project.description ?: "Feature toggle system API-Client SDK - ${project.name}"
+                url = 'https://github.com/line/Flagship4j'
+
+                scm {
+                    url = 'scm:git@github.com:line/Flagship4j.git'
+                    connection = 'scm:git@github.com:line/Flagship4j.git'
+                    developerConnection = 'scm:git@github.com:line/Flagship4j.git'
+                }
+                licenses {
+                    license {
+                        name = 'Apache'
+                        url = 'https://opensource.org/licenses/Apache-2.0'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'noahhsu'
+                        name = 'NoahHsu'
+                        email = 'knight6623@gmail.com'
+                    }
+                    developer {
+                        id = 'tennosuke5245'
+                        name = 'TeNNoSuKe'
+                        email = 'matsuda.kazuki@gmail.com'
+                    }
+                }
+            }
         }
+    }
+    repositories {
+        maven {
+            name = 'OSSRH'
+            url = uri('https://oss.sonatype.org/service/local/staging/deploy/maven2/')
+            credentials {
+                username = System.getenv('MAVEN_USERNAME')
+                password = System.getenv('MAVEN_PASSWORD')
+            }
+        }
+    }
+}
+
+def signingKeyId = rootProject.findProperty('signingKeyId')
+def signingKey = rootProject.findProperty('signingKey')
+def signingPassword = rootProject.findProperty('signingPassword')
+
+signing {
+    if (signingKey) {
+        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        required { true }
+        sign publishing.publications.mavenJava
     }
 }
