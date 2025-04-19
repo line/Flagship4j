@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
 }
 
 ext {

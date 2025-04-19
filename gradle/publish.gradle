@@ -3,11 +3,6 @@
  * LY Corporation PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-plugins {
-    id 'signing'
-    id 'maven-publish'
-}
-
 java {
     withJavadocJar()
     withSourcesJar()
