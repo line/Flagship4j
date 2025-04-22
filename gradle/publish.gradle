@@ -39,7 +39,12 @@ publishing {
                     developer {
                         id = 'tennosuke5245'
                         name = 'TeNNoSuKe'
-                        email = 'matsuda.kazuki@gmail.com'
+                        email = 'tennosuke5245@gmail.com'
+                    }
+                    developer {
+                        id = 'JamHsu'
+                        name = 'JamHsu'
+                        email = 'q44220123@gmail.com'
                     }
                 }
             }
