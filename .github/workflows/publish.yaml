@@ -1,0 +1,55 @@
+name: Publish Maven Central
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version to release'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@f9c9c575b8b21b6485636a91ffecd10e558c62f6
+
+      - name: Show Version Number
+        id: version
+        run: |
+          echo "Version=${{ github.event.release.tag_name }}"
+
+      - name: Build package
+        run: |
+          ./gradlew build
+
+      - name: Set version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION=${{ github.event.inputs.version }}
+          else
+            VERSION=${{ github.event.release.tag_name }}
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Publish package
+        run: |
+          ./gradlew --no-daemon --stacktrace --max-workers=1 --info publish closeAndReleaseStagingRepository
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          SDK_VERSION: ${{ env.VERSION }}
+          ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.GPG_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSWORD }}

@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
     id 'org.springframework.boot' version "${springbootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyVersion}"
 }
