@@ -45,7 +45,7 @@ jobs:
 
       - name: Publish package
         run: |
-          ./gradlew --no-daemon --stacktrace --max-workers=1 --info publish closeAndReleaseStagingRepository
+          ./gradlew --no-daemon --stacktrace --max-workers=1 --info publish closeAndReleaseStagingRepositories
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}

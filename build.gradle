@@ -5,6 +5,10 @@ plugins {
     id 'com.linecorp.gradle.license-git' version '0.1.0'
 }
 
+version = System.getenv("SDK_VERSION") ?: (
+        "0.1.40" + (project.hasProperty("release") ? "" : "-SNAPSHOT")
+)
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
