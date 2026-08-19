@@ -37,7 +37,7 @@ jobs:
           else
             VERSION="${{ github.event.release.tag_name }}"
           fi
-          # 去掉 tag 的 "v" 前綴 (vX.Y.Z -> X.Y.Z)
+          # Strip the "v" prefix from the tag (vX.Y.Z -> X.Y.Z)
           VERSION="${VERSION#v}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
