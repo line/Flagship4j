@@ -12,43 +12,47 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           java-version: '8'
           distribution: 'temurin'
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@f9c9c575b8b21b6485636a91ffecd10e558c62f6
+        uses: gradle/actions/wrapper-validation@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
 
       - name: Show Version Number
         id: version
         run: |
           echo "Version=${{ github.event.release.tag_name }}"
 
-      - name: Build package
-        run: |
-          ./gradlew build
-
       - name: Set version
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            VERSION=${{ github.event.inputs.version }}
+            VERSION="${{ github.event.inputs.version }}"
           else
-            VERSION=${{ github.event.release.tag_name }}
+            VERSION="${{ github.event.release.tag_name }}"
           fi
+          # Strip the "v" prefix from the tag (vX.Y.Z -> X.Y.Z)
+          VERSION="${VERSION#v}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Build package
+        run: |
+          ./gradlew build
+        env:
+          SDK_VERSION: ${{ env.VERSION }}
 
       - name: Publish package
         run: |
-          ./gradlew --no-daemon --stacktrace --max-workers=1 --info publish closeAndReleaseStagingRepositories
+          ./gradlew --no-daemon --stacktrace --max-workers=1 --info publishToSonatype closeAndReleaseSonatypeStagingRepository
         env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           SDK_VERSION: ${{ env.VERSION }}
           ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.GPG_KEY_ID }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
