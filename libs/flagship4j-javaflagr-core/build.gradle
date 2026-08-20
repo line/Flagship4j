@@ -1,6 +1,7 @@
 import java.text.SimpleDateFormat
 
 plugins {
+    id 'jacoco'
     id 'java-library'
     id 'maven-publish'
     id 'signing'
@@ -53,6 +54,15 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }
 
 apply from: "$rootDir/gradle/publish.gradle"
