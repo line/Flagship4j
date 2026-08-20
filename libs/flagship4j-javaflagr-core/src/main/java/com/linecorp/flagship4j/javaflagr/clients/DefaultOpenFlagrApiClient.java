@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 LY Corporation
+ * Copyright 2026 LY Corporation
  *
  * LY Corporation licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -55,7 +56,11 @@ public class DefaultOpenFlagrApiClient implements OpenFlagrApiClient {
                 .writeTimeout(openFlagrConfig.getWriteTimeout())
                 .callTimeout(openFlagrConfig.getCallTimeout())
                 .build();
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        // tolerate fields added by newer OpenFlagr servers so that a server-side
+        // upgrade does not break deserialization and silently fall back to defaults
+        this.objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         buildUrls(openFlagrConfig.getEndpoint());
     }
