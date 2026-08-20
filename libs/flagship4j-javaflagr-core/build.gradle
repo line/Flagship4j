@@ -45,6 +45,10 @@ dependencies {
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    // test
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.11.0'
 }
 
 tasks.named('test') {
