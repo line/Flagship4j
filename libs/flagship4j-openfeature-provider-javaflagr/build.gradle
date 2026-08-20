@@ -1,6 +1,7 @@
 import java.text.SimpleDateFormat
 
 plugins {
+    id 'jacoco'
     id 'java-library'
     id 'maven-publish'
     id 'signing'
@@ -44,10 +45,24 @@ dependencies {
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    // test
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.11.0'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }
 
 apply from: "$rootDir/gradle/publish.gradle"
