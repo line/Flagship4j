@@ -20,8 +20,10 @@ subprojects {
     compileTestJava.options.encoding = 'UTF-8'
     javadoc.options.encoding = 'UTF-8'
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 
     repositories {
         mavenLocal()
