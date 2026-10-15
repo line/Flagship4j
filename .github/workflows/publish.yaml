@@ -19,7 +19,9 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
-          java-version: '8'
+          java-version: |
+            8
+            21
           distribution: 'temurin'
 
       - name: Validate Gradle wrapper
@@ -43,7 +45,7 @@ jobs:
 
       - name: Build package
         run: |
-          ./gradlew build
+          ./gradlew build -Porg.gradle.java.installations.fromEnv=JAVA_HOME_8_X64
         env:
           SDK_VERSION: ${{ env.VERSION }}
 

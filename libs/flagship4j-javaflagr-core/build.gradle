@@ -55,6 +55,9 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
     finalizedBy jacocoTestReport
 }
 
