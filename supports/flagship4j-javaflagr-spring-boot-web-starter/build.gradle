@@ -36,6 +36,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-inline'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Byte Buddy managed by Spring Boot 2.7 does not support Java 21
+    testRuntimeOnly 'net.bytebuddy:byte-buddy:1.18.15'
+    testRuntimeOnly 'net.bytebuddy:byte-buddy-agent:1.18.15'
     testImplementation 'com.squareup.okhttp3:mockwebserver'
 
 
