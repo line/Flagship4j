@@ -20,9 +20,9 @@ tasks.withType(JavaCompile) {
 dependencies {
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.48'
+    annotationProcessor 'org.projectlombok:lombok:1.18.48'
+    implementation 'org.projectlombok:lombok:1.18.48'
 
     implementation 'com.google.errorprone:error_prone_annotations:2.9.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
