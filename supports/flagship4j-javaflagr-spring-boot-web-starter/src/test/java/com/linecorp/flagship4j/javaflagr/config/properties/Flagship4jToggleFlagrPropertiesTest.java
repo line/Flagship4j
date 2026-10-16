@@ -54,8 +54,7 @@ class Flagship4jToggleFlagrPropertiesTest {
         final Flagship4jToggleFlagrProperties second = propertiesWithBaseUrl("http://localhost:18000");
         final Flagship4jToggleFlagrProperties other = propertiesWithBaseUrl("http://localhost:18001");
 
-        assertThat(first).isEqualTo(first)
-                         .isEqualTo(second)
+        assertThat(first).isEqualTo(second)
                          .hasSameHashCodeAs(second)
                          .isNotEqualTo(other)
                          .isNotEqualTo(null)

@@ -20,9 +20,9 @@ tasks.withType(JavaCompile) {
 dependencies {
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.48'
+    annotationProcessor 'org.projectlombok:lombok:1.18.48'
+    implementation 'org.projectlombok:lombok:1.18.48'
 
     implementation 'com.google.errorprone:error_prone_annotations:2.9.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -36,12 +36,14 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-inline'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Byte Buddy managed by Spring Boot 2.7 does not support Java 21
+    testRuntimeOnly 'net.bytebuddy:byte-buddy:1.18.15'
+    testRuntimeOnly 'net.bytebuddy:byte-buddy-agent:1.18.15'
     testImplementation 'com.squareup.okhttp3:mockwebserver'
 
 
     // ErrorProne
-    errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
-    errorprone 'com.google.errorprone:error_prone_core:2.9.0'
+    errorprone 'com.google.errorprone:error_prone_core:2.50.0'
 
 }
 
