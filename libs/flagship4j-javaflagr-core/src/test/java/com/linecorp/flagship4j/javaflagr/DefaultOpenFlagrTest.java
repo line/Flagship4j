@@ -73,6 +73,14 @@ class DefaultOpenFlagrTest {
         assertEquals(expected, openFlagr.isFeatureFlagOn(FLAG_KEY));
     }
 
+    @ParameterizedTest
+    @CsvSource({ "ON,true", "True,true", "Off,false", "FALSE,false" })
+    void isFeatureFlagOnMapsEffectiveVariantAliasesRegardlessOfCase(String variantKey, boolean expected) {
+        enqueueEvaluation(variantKey);
+
+        assertEquals(expected, openFlagr.isFeatureFlagOn(FLAG_KEY));
+    }
+
     @Test
     void isFeatureFlagOnFallsBackToFalseWhenVariantIsNotAnEffectiveVariant() {
         enqueueEvaluation("control");

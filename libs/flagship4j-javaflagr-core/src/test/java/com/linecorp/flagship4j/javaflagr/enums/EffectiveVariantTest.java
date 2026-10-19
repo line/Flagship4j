@@ -24,7 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,6 +50,12 @@ class EffectiveVariantTest {
     }
 
     @ParameterizedTest
+    @CsvSource({ "ON,ON", "On,ON", "TRUE,ON", "True,ON", "OFF,OFF", "Off,OFF", "FALSE,OFF" })
+    void fromValueResolvesAliasesRegardlessOfCase(String value, EffectiveVariant expected) {
+        assertSame(expected, EffectiveVariant.fromValue(value));
+    }
+
+    @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = { " ", "\t" })
     void fromValueRejectsBlankValue(String value) {
@@ -59,7 +67,7 @@ class EffectiveVariantTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "ON", "Off", "yes", "2" })
+    @ValueSource(strings = { "yes", "2", "onn" })
     void fromValueRejectsUnknownValue(String value) {
         final IllegalEnumValueException ex =
                 assertThrows(IllegalEnumValueException.class, () -> EffectiveVariant.fromValue(value));
@@ -81,6 +89,7 @@ class EffectiveVariantTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = { "", " ", "yes", "2", "onn" })
     void isValidRejectsUnknownValue(String value) {
         assertFalse(EffectiveVariant.isValid(value));
