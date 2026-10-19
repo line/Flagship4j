@@ -87,6 +87,20 @@ class OpenFlagrProviderTest {
         assertNull(evaluation.getErrorCode());
     }
 
+    @ParameterizedTest
+    @CsvSource({ "ON,true", "True,true", "Off,false", "FALSE,false" })
+    void booleanEvaluationMapsEffectiveVariantAliasesRegardlessOfCase(String variantKey, boolean expected) {
+        givenEvaluation(variantKey);
+
+        final ProviderEvaluation<Boolean> evaluation =
+                provider.getBooleanEvaluation(FLAG_KEY, !expected, new ImmutableContext());
+
+        assertEquals(expected, evaluation.getValue());
+        assertEquals(Reason.DEFAULT.name(), evaluation.getReason());
+        assertEquals(variantKey, evaluation.getVariant());
+        assertNull(evaluation.getErrorCode());
+    }
+
     @Test
     void booleanEvaluationFallsBackToTheDefaultValueOnANonBooleanVariant() {
         givenEvaluation("control");

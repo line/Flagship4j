@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 LY Corporation
+ * Copyright 2026 LY Corporation
  *
  * LY Corporation licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -18,6 +18,7 @@ package com.linecorp.flagship4j.javaflagr.enums;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -49,11 +50,12 @@ public enum EffectiveVariant {
             throw IllegalEnumValueException.causedByBlankValue();
         }
 
-        if (!BY_VALUE.containsKey(value)) {
+        final String normalizedValue = normalize(value);
+        if (!BY_VALUE.containsKey(normalizedValue)) {
             throw IllegalEnumValueException.causedByInvalidValue(value);
         }
 
-        return BY_VALUE.get(value);
+        return BY_VALUE.get(normalizedValue);
     }
 
     private final List<String> values;
@@ -68,7 +70,11 @@ public enum EffectiveVariant {
     }
 
     public static Boolean isValid(String value) {
-        return BY_VALUE.containsKey(value.toLowerCase());
+        return value != null && BY_VALUE.containsKey(normalize(value));
+    }
+
+    private static String normalize(String value) {
+        return value.toLowerCase(Locale.ROOT);
     }
 
 }
