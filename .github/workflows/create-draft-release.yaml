@@ -45,7 +45,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Fetch Latest Release
         id: get-latest-release
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -65,12 +64,19 @@ jobs:
       - name: Calculate New Version
         id: calculate-version
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          LATEST_TAG: ${{ steps.get-latest-release.outputs.latest_tag }}
+          VERSION_TYPE: ${{ github.event.inputs.version_type }}
         with:
           script: |
-            const latestTag = '${{ steps.get-latest-release.outputs.latest_tag }}';
-            const versionType = '${{ github.event.inputs.version_type }}';
+            const latestTag = process.env.LATEST_TAG;
+            const versionType = process.env.VERSION_TYPE;
 
-            const [major, minor, patch] = latestTag.replace('v', '').split('.').map(Number);
+            if (!/^v?\d+\.\d+\.\d+$/.test(latestTag) || !['major', 'minor', 'patch'].includes(versionType)) {
+              throw new Error('Expected a stable version tag and a major, minor, or patch increment');
+            }
+
+            const [major, minor, patch] = latestTag.replace(/^v/, '').split('.').map(Number);
 
             let newVersion;
             if (versionType === 'major') {
@@ -84,14 +90,15 @@ jobs:
             core.setOutput('new_version', newVersion);
 
       - name: Generate Release Notes
-        id: generate-release-notes
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          NEW_VERSION: ${{ steps.calculate-version.outputs.new_version }}
         with:
           script: |
             const { data: releaseNotes } = await github.rest.repos.generateReleaseNotes({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: "${{ steps.calculate-version.outputs.new_version }}"
+              tag_name: process.env.NEW_VERSION
             });
 
             const actor = context.actor;
@@ -106,28 +113,17 @@ jobs:
             .concat(`\n\n${footer}`);
 
             console.log(`releaseNotes (modified): ${JSON.stringify(modifiedBody, null, 2)}`);
-            core.setOutput("release_body", modifiedBody);
-
-      - name: Prepare Release Title
-        id: title
-        env:
-          # "vX.Y.Z Release Title"
-          RAW_TITLE: ${{ steps.calculate-version.outputs.new_version }} ${{ github.event.inputs.release_title }}
-        run: |
-          # Print RAW_TITLE safely, then escape double quotes
-          SANITIZED_TITLE="$(printf '%s' "$RAW_TITLE" | sed 's/"/\\"/g')"
-          echo "sanitized_title=$SANITIZED_TITLE" >> "$GITHUB_OUTPUT"
-
-      - name: Write Release Notes to File
-        run: |
-          echo "${{ steps.generate-release-notes.outputs.release_body }}" > release-notes.txt
+            require('node:fs').writeFileSync('release-notes.txt', modifiedBody, 'utf8');
 
       - name: Create Draft Release
         run: |
-          gh release create "${{ steps.calculate-version.outputs.new_version }}" \
-            --title "${{ steps.title.outputs.sanitized_title }}" \
+          gh release create "$RELEASE_VERSION" \
+            --title "$RELEASE_TITLE" \
             --notes-file release-notes.txt \
             --draft \
-            --repo "${{ github.repository }}"
+            --repo "$RELEASE_REPOSITORY"
         env:
+          RELEASE_VERSION: ${{ steps.calculate-version.outputs.new_version }}
+          RELEASE_TITLE: ${{ steps.calculate-version.outputs.new_version }} ${{ github.event.inputs.release_title }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
